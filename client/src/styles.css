@@ -1,0 +1,17 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+.container, .problemLayout {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  height: 100%;
+}
+
+.leftPanel, .rightPanel {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #555;
+}
