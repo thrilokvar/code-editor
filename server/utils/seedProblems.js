@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Problem from "../models/Problem.js";
+import { Problem } from "../models/Problem.js";
 
 // Connect to MongoDB (modern Mongoose, no options needed)
 mongoose.connect(
@@ -24,6 +24,13 @@ const problems = [
     description: "Given a string s, return its reverse.",
     sampleInput: "hello",
     sampleOutput: "olleh",
+  },
+  {
+    title: "Even or Odd",
+    description:
+      "Given an integer, determinie if it is an odd number or even number.",
+    sampleInput: "3",
+    sampleOutput: "Odd",
   },
 ];
 

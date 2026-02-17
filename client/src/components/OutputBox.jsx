@@ -1,18 +1,12 @@
 import React from "react";
 
-function OutputBox({ output, verdict }) {
+const OutputBox = ({ output, verdict }) => {
   return (
-    <div className="outputBox">
-      <h4>Output:</h4>
+    <div>
+      {verdict && <h3>Verdict: {verdict}</h3>}
       <pre>{output}</pre>
-
-      {verdict && (
-        <h3 className={verdict === "Accepted" ? "accepted" : "wrong"}>
-          {verdict}
-        </h3>
-      )}
     </div>
   );
-}
+};
 
 export default OutputBox;

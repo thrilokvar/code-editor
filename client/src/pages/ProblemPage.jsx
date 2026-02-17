@@ -1,65 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import API from "../api/axios.js";
-import CodeEditor from "../components/CodeEditor.jsx";
-import InputBox from "../components/InputBox.jsx";
-import OutputBox from "../components/OutputBox.jsx";
-import LanguageSelector from "../components/LanguageSelector.jsx";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import CodeEditor from "../components/CodeEditor";
+import InputBox from "../components/InputBox";
+import OutputBox from "../components/OutputBox";
+import LanguageSelector from "../components/LanguageSelector";
 
-function ProblemPage() {
-  const { id } = useParams();
-  const [problem, setProblem] = useState(null);
-  const [language, setLanguage] = useState("python");
-  const [code, setCode] = useState("");
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-  const [verdict, setVerdict] = useState("");
+const ProblemsPage = () => {
+  const [problems, setProblems] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProblem = async () => {
-      const res = await API.get(`/problems/${id}`);
-      setProblem(res.data);
-      setInput(res.data.sampleInput);
-    };
-    fetchProblem();
-  }, [id]);
-
-  const runCode = async () => {
-    const res = await API.post("/run", { language, code, input });
-    setOutput(res.data.output);
-    setVerdict("");
-  };
-
-  const submitCode = async () => {
-    const res = await API.post("/submit", { problemId: id, language, code });
-    setVerdict(res.data.verdict);
-  };
-
-  if (!problem) return <div>Loading...</div>;
+    axios.get("http://localhost:5000/api/problems")
+      .then(res => setProblems(res.data))
+      .catch(err => console.error(err));
+  }, []);
 
   return (
-    <div className="problemLayout" style={{ display: "flex" }}>
-      <div className="leftPanel" style={{ flex: 1, padding: "10px" }}>
-        <h2>{problem.title}</h2>
-        <p>{problem.description}</p>
-        <h4>Sample Input</h4>
-        <pre>{problem.sampleInput}</pre>
-        <h4>Sample Output</h4>
-        <pre>{problem.sampleOutput}</pre>
-      </div>
+    <div style={styles.container}>
+      <h1 style={styles.heading}>🚀 Coding Problems</h1>
 
-      <div className="rightPanel" style={{ flex: 1, padding: "10px" }}>
-        <LanguageSelector language={language} setLanguage={setLanguage} />
-        <CodeEditor language={language} code={code} setCode={setCode} />
-        <InputBox input={input} setInput={setInput} />
-        <div>
-          <button onClick={runCode}>Run</button>
-          <button onClick={submitCode}>Submit</button>
-        </div>
-        <OutputBox output={output} verdict={verdict} />
+      <div style={styles.grid}>
+        {problems.map((problem) => (
+          <div
+            key={problem._id}
+            style={styles.card}
+            onClick={() => navigate(`/problem/${problem._id}`)}
+          >
+            <h2 style={styles.title}>{problem.title}</h2>
+            <p style={styles.description}>
+              {problem.description}
+            </p>
+            <button style={styles.button}>
+              Solve Problem →
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
-}
+};
 
-export default ProblemPage;
+const styles = {
+  container: {
+    padding: "40px",
+    background: "linear-gradient(to right, #141E30, #243B55)",
+    minHeight: "100vh",
+    color: "white",
+  },
+  heading: {
+    textAlign: "center",
+    marginBottom: "40px",
+    fontSize: "40px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "20px",
+  },
+  card: {
+    background: "white",
+    color: "#333",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+    cursor: "pointer",
+    transition: "transform 0.2s",
+  },
+  title: {
+    marginBottom: "10px",
+  },
+  description: {
+    fontSize: "14px",
+    marginBottom: "15px",
+  },
+  button: {
+    backgroundColor: "#6C63FF",
+    color: "white",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  },
+};
+
+export default ProblemsPage;

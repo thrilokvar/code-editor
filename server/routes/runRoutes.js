@@ -1,23 +1,19 @@
 import express from "express";
-import Submission from "../models/Submission.js";
+import { runCode } from "../utils/runCode.js";
 
 const router = express.Router();
 
 router.post("/run", async (req, res) => {
   const { code, language, input } = req.body;
-  // For now, dummy output
-  res.json({ output: "Code executed!\nInput was:\n" + input });
-});
 
-router.post("/submit", async (req, res) => {
-  const { problemId, language, code } = req.body;
-  const submission = await Submission.create({
-    problemId,
-    language,
-    code,
-    verdict: "Accepted", // dummy verdict
-  });
-  res.json({ verdict: submission.verdict });
+  console.log("Incoming input:", input);
+
+  try {
+    const output = await runCode(code, language, input);
+    res.json({ output });
+  } catch (err) {
+    res.status(500).json({ output: err.message });
+  }
 });
 
 export default router;

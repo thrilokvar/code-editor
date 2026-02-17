@@ -1,15 +1,15 @@
 import React from "react";
 
-function InputBox({ input, setInput }) {
+const InputBox = ({ input, setInput }) => {
   return (
     <textarea
       rows="5"
-      className="inputBox"
+      cols="50"
       placeholder="Custom Input"
       value={input}
       onChange={(e) => setInput(e.target.value)}
     />
   );
-}
+};
 
 export default InputBox;
