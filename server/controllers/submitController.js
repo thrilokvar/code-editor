@@ -8,7 +8,7 @@ export const submitCode = async (req, res) => {
     const problem = await Problem.findById(problemId);
     if (!problem) return res.status(404).json({ verdict: "Problem not found" });
 
-    let verdict = "Accepted";
+    let verdict = "Accepted"; //Accepted the written code
 
     for (const testCase of problem.testCases) {
       const output = await runCode(
